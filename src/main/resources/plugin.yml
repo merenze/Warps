@@ -1,0 +1,7 @@
+name: Warps
+main: com.gmail.merenze.warps.Warps
+version: 1
+commands:
+  warp:
+    description: Teleports to specified location
+    aliases: go
