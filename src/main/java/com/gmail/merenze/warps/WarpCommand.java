@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
 public class WarpCommand implements CommandExecutor {
 	private Warps plugin;
 	
-	private final String usage = "/warp <warpname>: Teleports you to your specified warp.\n";
-	private final String setusage = "/warp set <warpname>: Sets a warp at your location.\n";
-	private final String deleteusage = "/warp delete <warpname>: Deletes your specified warp.\n";
-	private final String listusage = "/warp list: Lists your warps.\n";
+	private final String usage = ChatColor.GRAY + "/warp <warpname>: Teleports you to your specified warp.\n";
+	private final String setusage = ChatColor.GRAY + "/warp set <warpname>: Sets a warp at your location.\n";
+	private final String deleteusage = ChatColor.GRAY + "/warp del <warpname>: Deletes your specified warp.\n";
+	private final String listusage = ChatColor.GRAY + "/warp list: Lists your warps.\n";
 	private final String nowarp = ChatColor.GRAY + "You do not have a warp by that name.";
-	private final String warpset = ChatColor.GRAY + "Warp has been set to your location.";
-	private final String warpdeleted = ChatColor.GRAY + "Warp has been deleted.";
+	private final String warpset = ChatColor.GRAY + "Warp set to your location.";
+	private final String warpdeleted = ChatColor.GRAY + "Warp deleted.";
 	
 	public WarpCommand(Warps plugin) {
 		this.plugin = plugin;
@@ -58,7 +58,7 @@ public class WarpCommand implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("list")) { //If first argument is "list"
 					listWarps(player);
-				} else {
+				} else { //If player types a warp name
 					if (hasWarp(player, args[0])) { //If the player has the warp
 						player.teleport(getWarpLocation(player, args[0])); //Teleport player to warp
 					} else { //If player does not have the warp
@@ -75,17 +75,17 @@ public class WarpCommand implements CommandExecutor {
 	public Location getWarpLocation(Player player, String warp) {
 		if (hasWarp(player, warp)) { //Called again in case getWarpLocation is called outside of teleport method
 			String uuid = player.getUniqueId().toString();
-			World world = plugin.getServer().getWorld(plugin.getConfig().getString(uuid + "." + warp + ".world"));
-			double x = plugin.getConfig().getDouble(uuid + "." + warp + ".x");
-			double y = plugin.getConfig().getDouble(uuid + "." + warp + ".y");
-			double z = plugin.getConfig().getDouble(uuid + "." + warp + ".z");
+			World world = plugin.getServer().getWorld(plugin.getPlayerWarps().getString(uuid + "." + warp + ".world"));
+			double x = plugin.getPlayerWarps().getDouble(uuid + "." + warp + ".x");
+			double y = plugin.getPlayerWarps().getDouble(uuid + "." + warp + ".y");
+			double z = plugin.getPlayerWarps().getDouble(uuid + "." + warp + ".z");
 			return new Location(world, x, y, z);
 		}
 		else return player.getLocation();
 	}
 	//Lists warps to player
 	public void listWarps(Player player) {
-		Set<String> warps = plugin.getConfig().getConfigurationSection(player.getUniqueId().toString()).getKeys(false);
+		Set<String> warps = plugin.getPlayerWarps().getConfigurationSection(player.getUniqueId().toString()).getKeys(false);
 		String msg = ChatColor.GRAY + "Your warps: ";
 		for (String name:warps) {
 			msg = msg.concat("[" + name + "] ");
@@ -96,23 +96,25 @@ public class WarpCommand implements CommandExecutor {
 	public void setWarp(Player player, String warp) {
 		String path = player.getUniqueId().toString() + "." + warp + ".";
 		Location location = player.getLocation();
-		plugin.getConfig().set(path + "world", location.getWorld().getName());
-		plugin.getConfig().set(path + "x", location.getX());
-		plugin.getConfig().set(path + "y", location.getY());
-		plugin.getConfig().set(path + "z", location.getZ());
-		plugin.saveConfig();
-		plugin.reloadConfig();
+		plugin.getPlayerWarps().set(path + "world", location.getWorld().getName());
+		plugin.getPlayerWarps().set(path + "x", location.getX());
+		plugin.getPlayerWarps().set(path + "y", location.getY());
+		plugin.getPlayerWarps().set(path + "z", location.getZ());
+		plugin.getPlayerWarps().save();
+		plugin.loadPlayerWarps();
 	}
 	//Deletes warp from config
 	public void deleteWarp(Player player, String warp) {
 		String path = player.getUniqueId().toString() + "." + warp;
-		plugin.getConfig().set(path, null);
+		plugin.getPlayerWarps().set(path, null);
 	}
 	//Tests if player has warp by specified name
 	public boolean hasWarp(Player player, String warp) {
 		String uuid = player.getUniqueId().toString();
-		if (plugin.getConfig().getConfigurationSection("").contains(uuid)) //If player is registered in config
-			return plugin.getConfig().getConfigurationSection(uuid).contains(warp); //Return true if player has warp, else return false
-		else return false; //If player is not registered in config, he has no warps. Return false
+		if (plugin.getPlayerWarps().getConfigurationSection("").contains(uuid)) { //If player is registered in config
+			return plugin.getPlayerWarps().getConfigurationSection(uuid).contains(warp); //Return true if player has warp, else return false
+		} else  {
+			return false; //If player is not registered in config, he has no warps. Return false
+		}
 	}
 }
