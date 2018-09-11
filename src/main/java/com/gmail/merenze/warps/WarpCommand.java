@@ -1,5 +1,7 @@
 package com.gmail.merenze.warps;
 
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -47,7 +49,7 @@ public class WarpCommand implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("set")) { //If first argument is "set"
 					setWarp(player, args[1]); //Creates the warp
 					player.sendMessage(warpset);
-				} else if (args[0].equalsIgnoreCase("delete")) { //If first argument is "delete"
+				} else if (args[0].equalsIgnoreCase("delete") || args[0].equalsIgnoreCase("del")) { //If first argument is "delete"
 					if (hasWarp(player, args[1])) { //If warp exists
 						deleteWarp(player, args[1]); //Delete warp
 					player.sendMessage(warpdeleted);
@@ -81,8 +83,14 @@ public class WarpCommand implements CommandExecutor {
 		}
 		else return player.getLocation();
 	}
+	//Lists warps to player
 	public void listWarps(Player player) {
-		
+		Set<String> warps = plugin.getConfig().getConfigurationSection(player.getUniqueId().toString()).getKeys(false);
+		String msg = ChatColor.GRAY + "Your warps: ";
+		for (String name:warps) {
+			msg = msg.concat("[" + name + "] ");
+		}
+		player.sendMessage(msg);
 	}
 	//Saves warp to config
 	public void setWarp(Player player, String warp) {

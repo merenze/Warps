@@ -15,19 +15,19 @@
           </plugin>
       </plugins>
    </build>
-      <repositories>
-       <repository>
-         <id>bukkit-repo</id>
-         <url>http://repo.bukkit.org/content/groups/public/</url>
-       </repository>
-   </repositories>
-      <dependencies>
-       <dependency>
+         <repositories>
+       		<repository>
+         		<id>spigot-repo</id>
+         		<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+       	</repository>
+   		</repositories>
+         <dependencies>
+       		<dependency>
            <groupId>org.bukkit</groupId>
            <artifactId>bukkit</artifactId>
-           <version>1.7.9-R0.2</version>
+           <version>1.12.2-R0.1-SNAPSHOT</version><!--change this value depending on the version or use LATEST-->
            <type>jar</type>
            <scope>provided</scope>
        </dependency>
    </dependencies>
-</project>
+   </project>
