@@ -21,7 +21,7 @@ public class Warps extends JavaPlugin {
 		this.saveConfig();
 	}
 	public void loadPlayerWarps() {
-		this.getPlayerWarps().options().copyDefaults(true);
+		playerWarps.getYaml().options().copyDefaults(true);
 		playerWarps.save();
 	}
 	

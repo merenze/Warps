@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  */
 public class CustomConfig {
-	private File yml;
+	private File file;
 	private YamlConfiguration config;
 	/**
 	 * Creates a new YAML file
@@ -25,54 +25,23 @@ public class CustomConfig {
 	 *    Name of the file; must include ".yml"
 	 */
 	public CustomConfig(JavaPlugin plugin, String filename) {
-		this.yml = new File(plugin.getDataFolder() + File.separator + filename);
-		this.config = YamlConfiguration.loadConfiguration(yml);
+		this.file = new File(plugin.getDataFolder() + File.separator + filename);
+		this.config = YamlConfiguration.loadConfiguration(file);
 	}
 	/**
 	 * Saves the YAML file
 	 */
 	public void save() {
 		try {
-			config.save(yml);
+			config.save(file);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 	/**
-	 * Stores a value in the YAML file
-	 * @param path
-	 * @param value
+	 * Returns the YamlConfiguration for the CustomConfig
 	 */
-	public void set(String path, Object value) {
-		config.set(path, value);
-	}
-	
-	public Object get(String path) {
-		return config.get(path);
-	}
-	public int getInt(String path) {
-		return config.getInt(path);
-	}
-	public double getDouble(String path) {
-		return config.getDouble(path);
-	}
-	public boolean getChar(String path) {
-		return config.getBoolean(path);
-	}
-	public String getString(String path) {
-		return config.getString(path);
-	}
-	public List getList(String path) {
-		return config.getList(path);
-	}
-	public Set<String> getKeys(boolean deep) {
-		return config.getKeys(deep);
-	}
-
-	public ConfigurationSection getConfigurationSection(String path) {
-		return config.getConfigurationSection(path);
-	}
-	public FileConfigurationOptions options() {
-		return config.options();
+	public YamlConfiguration getYaml() {
+		return config;
 	}
 }
